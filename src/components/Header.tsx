@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { gsap } from "gsap";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FaMedal } from "react-icons/fa";
 
 const StyledHeader = styled.header`
   background-color: var(--color-gray-900);
+  height: 4rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -36,7 +37,7 @@ export default function Header() : JSX.Element {
 
   useEffect(() => {
     let totalWidth = (headerRef.current as HTMLDivElement).clientWidth
-    gsap.to(flagRef.current, {x: totalWidth, duration: 5, delay: 1})
+    gsap.to(flagRef.current, {x: totalWidth, duration: 4, delay: 1})
   }, [])
 
   return (

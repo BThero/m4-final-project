@@ -2,16 +2,10 @@ import { forwardRef } from "react";
 import styled from "styled-components";
 import { SlideProps } from "./types";
 
-const StyledSlide = styled.div<{ src: string}>`
-  background-image: url(${(props) => (props.src)});
-  background-repeat: no-repeat;
-  background-size: cover;
+const StyledSlide = styled.div`
   width: 100%;
   height: 100%;
   color: white;
-  text-align: center;
-  flex-shrink: 0;
-  transition: transform 1s linear;
   position: absolute;
 
   h1 {
@@ -23,10 +17,35 @@ const StyledSlide = styled.div<{ src: string}>`
   }
 `
 
+const StyledImageContainer = styled.div<{ src: string }>`
+  background-image: url(${(props) => (props.src)});
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-self: stretch;
+  flex: 1;
+`
+
+const StyledWrapper = styled.div`
+  width: 100%;  
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  /* &:hover {
+    transform: scale(1.1);
+    transition: transform 0.5s ease-in-out;
+  } */
+`
+
 const Slide = forwardRef<HTMLDivElement | null, SlideProps>((props, ref) => (
-  <StyledSlide src={props.imageUrl} ref={ref}>
-    <h1>{props.heading}</h1>
-    <p>{props.description}</p>
+  <StyledSlide ref={ref}>
+    <StyledWrapper>
+      <h1>{props.heading}</h1>
+      <p>{props.description}</p>
+      <StyledImageContainer src={props.imageUrl} />
+    </StyledWrapper>
   </StyledSlide>
 )) 
 

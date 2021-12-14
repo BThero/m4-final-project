@@ -1,13 +1,15 @@
-import { MutableRefObject, SyntheticEvent, useEffect, useRef, useState } from "react"
+import { MutableRefObject, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import Slide from "./Slide"
 import { SlideProps } from "./types"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { gsap, Power4 } from "gsap"
 
 const StyledCarousel = styled.section`
-  background-color: var(--color-gray-900);
-  margin: 2rem auto;
-  width: 50vw;
+  background-color: var(--color-gray-700);
+  padding: 10rem 0;
+  width: 100%;
+  height: 100%;
   position: relative;
 
   button {
@@ -38,6 +40,7 @@ const StyledCarousel = styled.section`
 `
 
 const StyledSlideshow = styled.div`
+  margin: 0 auto;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -85,89 +88,116 @@ export default function Carousel() : JSX.Element {
   const buttonLeftRef = useRef<(HTMLButtonElement | null)>(null);
   const buttonRightRef = useRef<(HTMLButtonElement | null)>(null);
 
-  let currentIndex : number = 0
-  let animationEase : string = 'cubic-bezier(0.33, 1, 0.68, 1)'
-  let animationTiming : number = 1
+  const animationTiming : number = 1.5
+  let curIndex = 0
+  let slideshowTimer: NodeJS.Timeout | null = null
 
   useEffect(() => {
-    refreshSlideshow(0)
-    // automaticSlideshow()
-  })
-
-  function automaticSlideshow() {
-    setTimeout(() => {
-      currentIndex = (currentIndex + 1) % list.length
-      refreshSlideshow(1)
-      automaticSlideshow()
-    }, 3000)
-  }
+    refreshSlideshow(0);
+  }, [])
 
   function refreshSlideshow(direction : number) {
-    if (direction !== 0) {
-      (buttonLeftRef.current as HTMLButtonElement).disabled = true;
-      (buttonRightRef.current as HTMLButtonElement).disabled = true;
+    if (slideshowTimer) {
+      clearInterval(slideshowTimer as NodeJS.Timeout)
     }
+
+    slideshowTimer = setTimeout(() => {
+      curIndex = (curIndex + 1) % list.length
+      refreshSlideshow(1)
+    }, 5000)
+
+    let prevIndex = (curIndex + list.length - 1) % list.length;
+    let nextIndex = (curIndex + 1) % list.length;
+    
+    (buttonLeftRef.current as HTMLButtonElement).disabled = true;
+    (buttonRightRef.current as HTMLButtonElement).disabled = true;
 
     for (let i = 0; i < list.length; i++) {
       let element = listRefs[i].current as HTMLDivElement; 
-      element.setAttribute('style', 'opacity: 0; z-index: 0;')
+      element.removeEventListener('click', handleClickRight)
+      element.removeEventListener('click', handleClickLeft)
+      
+      gsap.to(element, {
+        opacity: 0,
+        duration: 0
+      })
     }
 
-    let prevIndex = (currentIndex + list.length - 1) % list.length
-    let nextIndex = (currentIndex + 1) % list.length
-
-    let curElement = listRefs[currentIndex].current as HTMLDivElement
+    let curElement = listRefs[curIndex].current as HTMLDivElement
     let prevElement = listRefs[prevIndex].current as HTMLDivElement
     let nextElement = listRefs[nextIndex].current as HTMLDivElement
 
-    curElement.setAttribute('style', `
-      transform: translateX(0);
-      opacity: 100%;
-      z-index: 1;
-      transition: 
-        transform ${animationTiming}s ${animationEase}, 
-        opacity ${animationTiming}s linear;
-    `)
+    curElement.removeAttribute('style')
+    prevElement.removeAttribute('style')
+    nextElement.removeAttribute('style')
 
-    prevElement.setAttribute('style', `
-      transform: translateX(-70%); 
-      opacity: 50%;
-      transition: 
-        transform ${direction === 0 ? 0 : animationTiming}s ${animationEase}, 
-        opacity ${direction === 0 ? 0 : animationTiming}s linear;
-    `)
+    prevElement.addEventListener('click', handleClickLeft)
+    nextElement.addEventListener('click', handleClickRight)
 
-    nextElement.setAttribute('style', `
-      transform: translateX(70%);
-      opacity: 50%; 
-      transition: 
-        transform ${direction === 0 ? 0 : animationTiming}s ${animationEase}, 
-        opacity ${direction === 0 ? 0 : animationTiming}s linear;
-    `)
+    let headingText = curElement.querySelector('h1')
+    let supportingText = curElement.querySelector('p')
+    let tl = gsap.timeline()
+
+    tl.to(curElement, {
+      xPercent: 0,
+      scale: 1,
+      opacity: 1,
+      zIndex: 1,
+      duration: animationTiming,
+      ease: Power4.easeOut
+    })
+
+    tl.from(headingText, {
+      y: 100,
+      opacity: 0,
+      duration: 0.7,
+    })
+
+    tl.from(supportingText, {
+      y: 100,
+      opacity: 0,
+      duration: 0.7,
+    }, "<")
+    
+    gsap.to(prevElement, {
+      xPercent: -70,
+      scale: 0.8,
+      opacity: 0.5,
+      duration: animationTiming,
+      ease: Power4.easeOut,
+    })
+
+    gsap.to(nextElement, {
+      xPercent: 70,
+      scale: 0.8,
+      opacity: 0.5,
+      duration: animationTiming,
+      ease: Power4.easeOut,
+    })
 
     setTimeout(() => {
       (buttonLeftRef.current as HTMLButtonElement).disabled = false;
       (buttonRightRef.current as HTMLButtonElement).disabled = false;
-    }, (animationTiming + 0.2) * 1000)
+    }, (animationTiming + 0.1) * 1000)
   }
 
-  function handleClickRight(event : SyntheticEvent) { 
+  function handleClickRight(event : any) { 
     if (buttonRightRef.current?.disabled === true) {
       return
     }
 
     event.preventDefault();
-    currentIndex = (currentIndex + 1) % list.length
+    curIndex = (curIndex + 1) % list.length
     refreshSlideshow(1)
   }
 
-  function handleClickLeft(event : SyntheticEvent) {
+  function handleClickLeft(event : any) {
     if (buttonLeftRef.current?.disabled === true) {
       return
     }
 
     event.preventDefault();
-    currentIndex = (currentIndex + list.length - 1) % list.length
+    curIndex = (curIndex + list.length - 1) % list.length
     refreshSlideshow(-1)
   }
 
@@ -177,18 +207,18 @@ export default function Carousel() : JSX.Element {
         {
           list.map((li, idx) => {
             return (
-              <Slide {...li} ref={listRefs[idx]}/>
+              <Slide {...li} ref={listRefs[idx]} />
             )
           })
         }
       </StyledSlideshow>
 
       <button className="left" ref={buttonLeftRef} onClick={handleClickLeft}>
-        <FaChevronLeft color="white" size="2rem"/>
+        <FaChevronLeft color="white" size="3rem"/>
       </button>
 
       <button className="right" ref={buttonRightRef} onClick={handleClickRight}>
-        <FaChevronRight color="white" size="2rem"/>
+        <FaChevronRight color="white" size="3rem"/>
       </button>
     </StyledCarousel>
   )
