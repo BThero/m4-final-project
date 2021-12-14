@@ -2,13 +2,12 @@ import { MutableRefObject, SyntheticEvent, useEffect, useRef, useState } from "r
 import styled from "styled-components"
 import Slide from "./Slide"
 import { SlideProps } from "./types"
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 
 const StyledCarousel = styled.section`
   margin: 3rem auto;
-  /* overflow: hidden; */
   width: 50vw;
   position: relative;
-  /* height: calc(50vw * 2 / 3); */
 
   button {
     position: absolute;
@@ -18,6 +17,14 @@ const StyledCarousel = styled.section`
     border: 0;
     border-radius: 0;
     background-color: transparent;
+  }
+
+  button:hover svg {
+    transform: scale(1.1);
+  }
+
+  button[disabled] svg {
+    fill: darkgrey;
   }
 
   .left {
@@ -79,28 +86,30 @@ export default function Carousel() : JSX.Element {
 
   let currentIndex : number = 0
   let animationEase : string = 'cubic-bezier(0.33, 1, 0.68, 1)'
-  let animationTiming : number = 0.7
+  let animationTiming : number = 1
 
   useEffect(() => {
-    refreshSlideshow(true)
+    refreshSlideshow(0)
+    // automaticSlideshow()
   })
 
   function automaticSlideshow() {
     setTimeout(() => {
-      refreshSlideshow(false)
+      currentIndex = (currentIndex + 1) % list.length
+      refreshSlideshow(1)
       automaticSlideshow()
-    }, 5000)
+    }, 3000)
   }
 
-  function refreshSlideshow(initial : boolean) {
-    if (initial === false) {
+  function refreshSlideshow(direction : number) {
+    if (direction !== 0) {
       (buttonLeftRef.current as HTMLButtonElement).disabled = true;
       (buttonRightRef.current as HTMLButtonElement).disabled = true;
     }
 
     for (let i = 0; i < list.length; i++) {
       let element = listRefs[i].current as HTMLDivElement; 
-      element.setAttribute('style', 'display: none; opacity: 0%; z-index: 0;')
+      element.setAttribute('style', 'opacity: 0; z-index: 0;')
     }
 
     let prevIndex = (currentIndex + list.length - 1) % list.length
@@ -114,23 +123,25 @@ export default function Carousel() : JSX.Element {
       transform: translateX(0);
       opacity: 100%;
       z-index: 1;
-      transition: transform 1s ${animationEase}, opacity 1s linear;
+      transition: 
+        transform ${animationTiming}s ${animationEase}, 
+        opacity ${animationTiming}s linear;
     `)
 
     prevElement.setAttribute('style', `
       transform: translateX(-70%); 
       opacity: 50%;
       transition: 
-        transform ${initial === true ? 0 : animationTiming}s ${animationEase}, 
-        opacity ${initial === true ? 0 : animationTiming}s linear;
+        transform ${direction === 0 ? 0 : animationTiming}s ${animationEase}, 
+        opacity ${direction === 0 ? 0 : animationTiming}s linear;
     `)
 
     nextElement.setAttribute('style', `
       transform: translateX(70%);
       opacity: 50%; 
       transition: 
-        transform ${initial === true ? 0 : animationTiming}s ${animationEase}, 
-        opacity ${initial === true ? 0 : animationTiming}s linear;
+        transform ${direction === 0 ? 0 : animationTiming}s ${animationEase}, 
+        opacity ${direction === 0 ? 0 : animationTiming}s linear;
     `)
 
     setTimeout(() => {
@@ -140,15 +151,23 @@ export default function Carousel() : JSX.Element {
   }
 
   function handleClickRight(event : SyntheticEvent) { 
+    if (buttonRightRef.current?.disabled === true) {
+      return
+    }
+
     event.preventDefault();
     currentIndex = (currentIndex + 1) % list.length
-    refreshSlideshow(false)
+    refreshSlideshow(1)
   }
 
   function handleClickLeft(event : SyntheticEvent) {
+    if (buttonLeftRef.current?.disabled === true) {
+      return
+    }
+
     event.preventDefault();
     currentIndex = (currentIndex + list.length - 1) % list.length
-    refreshSlideshow(false)
+    refreshSlideshow(-1)
   }
 
   return (
@@ -162,8 +181,14 @@ export default function Carousel() : JSX.Element {
           })
         }
       </StyledSlideshow>
-      <button className="left" ref={buttonLeftRef} onClick={handleClickLeft}>Left</button>
-      <button className="right" ref={buttonRightRef} onClick={handleClickRight}>Right</button>
+
+      <button className="left" ref={buttonLeftRef} onClick={handleClickLeft}>
+        <FaChevronLeft color="white" size="2rem"/>
+      </button>
+
+      <button className="right" ref={buttonRightRef} onClick={handleClickRight}>
+        <FaChevronRight color="white" size="2rem"/>
+      </button>
     </StyledCarousel>
   )
 }
