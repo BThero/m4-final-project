@@ -23,7 +23,7 @@ const StyledCarousel = styled.section`
   }
 
   button:hover svg {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 
   button[disabled] svg {
@@ -31,11 +31,11 @@ const StyledCarousel = styled.section`
   }
 
   .left {
-    left: 0;    
+    left: 5rem;    
   }
 
   .right {
-    right: 0;
+    right: 5rem;
   }
 `
 
@@ -97,14 +97,18 @@ export default function Carousel() : JSX.Element {
   }, [])
 
   function refreshSlideshow(direction : number) {
-    if (slideshowTimer) {
-      clearInterval(slideshowTimer as NodeJS.Timeout)
+    if (slideshowTimer !== null) {
+      clearTimeout(slideshowTimer)
+    }
+
+    if (slideshowTimer !== null) {
+      clearTimeout(slideshowTimer)
     }
 
     slideshowTimer = setTimeout(() => {
       curIndex = (curIndex + 1) % list.length
       refreshSlideshow(1)
-    }, 5000)
+    }, 10000)
 
     let prevIndex = (curIndex + list.length - 1) % list.length;
     let nextIndex = (curIndex + 1) % list.length;
@@ -116,23 +120,12 @@ export default function Carousel() : JSX.Element {
       let element = listRefs[i].current as HTMLDivElement; 
       element.removeEventListener('click', handleClickRight)
       element.removeEventListener('click', handleClickLeft)
-      
-      gsap.to(element, {
-        opacity: 0,
-        duration: 0
-      })
+      element.setAttribute('style', 'opacity: 0;')
     }
 
     let curElement = listRefs[curIndex].current as HTMLDivElement
     let prevElement = listRefs[prevIndex].current as HTMLDivElement
     let nextElement = listRefs[nextIndex].current as HTMLDivElement
-
-    curElement.removeAttribute('style')
-    prevElement.removeAttribute('style')
-    nextElement.removeAttribute('style')
-
-    prevElement.addEventListener('click', handleClickLeft)
-    nextElement.addEventListener('click', handleClickRight)
 
     let headingText = curElement.querySelector('h1')
     let supportingText = curElement.querySelector('p')
@@ -140,20 +133,16 @@ export default function Carousel() : JSX.Element {
 
     tl.to(curElement, {
       xPercent: 0,
-      scale: 1,
+      scale: 1.1,
       opacity: 1,
       zIndex: 1,
       duration: animationTiming,
       ease: Power4.easeOut
-    })
-
-    tl.from(headingText, {
+    }).from(headingText, {
       y: 100,
       opacity: 0,
       duration: 0.7,
-    })
-
-    tl.from(supportingText, {
+    }).from(supportingText, {
       y: 100,
       opacity: 0,
       duration: 0.7,
@@ -182,21 +171,23 @@ export default function Carousel() : JSX.Element {
   }
 
   function handleClickRight(event : any) { 
+    event.preventDefault();
+
     if (buttonRightRef.current?.disabled === true) {
       return
     }
 
-    event.preventDefault();
     curIndex = (curIndex + 1) % list.length
     refreshSlideshow(1)
   }
 
   function handleClickLeft(event : any) {
+    event.preventDefault();
+
     if (buttonLeftRef.current?.disabled === true) {
       return
     }
 
-    event.preventDefault();
     curIndex = (curIndex + list.length - 1) % list.length
     refreshSlideshow(-1)
   }
@@ -214,11 +205,11 @@ export default function Carousel() : JSX.Element {
       </StyledSlideshow>
 
       <button className="left" ref={buttonLeftRef} onClick={handleClickLeft}>
-        <FaChevronLeft color="white" size="3rem"/>
+        <FaChevronLeft color="white" size="4rem"/>
       </button>
 
       <button className="right" ref={buttonRightRef} onClick={handleClickRight}>
-        <FaChevronRight color="white" size="3rem"/>
+        <FaChevronRight color="white" size="4rem"/>
       </button>
     </StyledCarousel>
   )

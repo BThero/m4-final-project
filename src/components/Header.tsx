@@ -4,6 +4,9 @@ import { useEffect, useRef } from "react";
 import { FaMedal } from "react-icons/fa";
 
 const StyledHeader = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 999;
   background-color: var(--color-gray-900);
   height: 4rem;
   display: flex;
