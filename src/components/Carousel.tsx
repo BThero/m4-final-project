@@ -5,7 +5,8 @@ import { SlideProps } from "./types"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 
 const StyledCarousel = styled.section`
-  margin: 3rem auto;
+  background-color: var(--color-gray-900);
+  margin: 2rem auto;
   width: 50vw;
   position: relative;
 
