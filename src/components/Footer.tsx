@@ -140,7 +140,7 @@ export default function Footer() : JSX.Element {
         opacity: 0,
         duration: 1
       })
-    }, 1000)
+    }, 100)
   }, [])
 
   return (

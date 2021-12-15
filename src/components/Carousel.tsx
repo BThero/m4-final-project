@@ -8,7 +8,7 @@ import getData from './CarouselData'
 
 const StyledCarousel = styled.section`
   background-color: var(--color-gray-700);
-  padding: 10rem 0;
+  padding: 2rem 0;
   width: 100%;
   height: 100%;
   position: relative;
@@ -49,6 +49,13 @@ const StyledSlideshow = styled.div`
   height: calc(50vw * 2 / 3);
 `
 
+const StyledHeader = styled.header`
+  margin-bottom: 6rem;
+  font-size: 2.5rem;
+  color: white;
+  text-align: center;
+`
+
 export default function Carousel() : JSX.Element {
   const [list] = useState<SlideProps[]>(getData())
   const [listRefs] = useState<MutableRefObject<HTMLDivElement | null>[]>([
@@ -61,6 +68,7 @@ export default function Carousel() : JSX.Element {
 
   const buttonLeftRef = useRef<(HTMLButtonElement | null)>(null);
   const buttonRightRef = useRef<(HTMLButtonElement | null)>(null);
+  const headerRef = useRef<(HTMLDivElement | null)>(null);
 
   const animationTiming : number = 1.5
   let curIndex : number = 0
@@ -68,6 +76,12 @@ export default function Carousel() : JSX.Element {
 
   useEffect(() => {
     refreshSlideshow(0);
+
+    gsap.from(headerRef.current, {
+      y: -100,
+      opacity: 0,
+      duration: 2
+    })
   }, [])
 
   function refreshSlideshow(direction : number) {
@@ -168,6 +182,11 @@ export default function Carousel() : JSX.Element {
 
   return (
     <StyledCarousel>
+      <StyledHeader ref={headerRef}>
+        <h1>
+          See the history
+        </h1>
+      </StyledHeader>
       <StyledSlideshow>
         {
           list.map((li, idx) => {

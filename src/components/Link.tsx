@@ -36,12 +36,9 @@ const Link = forwardRef<HTMLAnchorElement | null, LinkProps>((props, ref) => {
   const linkRef = useForwardedRef(ref)
 
   useEffect(() => {
-    console.log(linkRef)
     let linkElement = linkRef.current as HTMLAnchorElement
 
     if (linkRef && linkElement) {
-      console.log('lololol ' + props.offset)
-
       linkElement.addEventListener('mouseenter', () => {
         let linkWidth = linkElement.clientWidth
 

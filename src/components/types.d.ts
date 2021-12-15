@@ -11,3 +11,15 @@ export interface LinkProps {
   href: string,
   offset?: string
 }
+
+export interface Submission {
+  time: number,
+  problem: number,
+  verdict: boolean,
+  team?: number
+}
+
+export interface TeamData {
+  name: string,
+  submissions: Submission[]
+}
