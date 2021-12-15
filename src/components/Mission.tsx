@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { TextPlugin } from "gsap/TextPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaArrowRight } from "react-icons/fa";
+import Link from "./Link";
 
 const StyledMission = styled.section`
   display: flex;
@@ -50,21 +51,13 @@ const StyledWrapperLeft = styled.div`
   }
 
   a {
-    display: inline-block;
     color: var(--color-rose-300);
-    text-decoration: none;
-    transform: translateX(0);
-    /* transition: transform 0.5s linear; */  
   }
 
   a span {
     font-size: 1.5rem;
     margin-right: 0.5rem;
     vertical-align: 0.25rem;
-  }
-
-  a hr {
-    width: 25px;  
   }
 
   span.highlight {
@@ -85,7 +78,6 @@ export default function Mission() : JSX.Element {
   let firstParagraphRef = useRef<(HTMLParagraphElement | null)>(null)
   let secondParagraphRef = useRef<(HTMLParagraphElement | null)>(null)
   let horizontalRuleRef = useRef<(HTMLHRElement | null)>(null)
-  let linkUnderlineRef = useRef<(HTMLHRElement | null)>(null)
   let cursorRef = useRef<(HTMLSpanElement | null)>(null)
   let headingWrapperRef = useRef<(HTMLDivElement | null)>(null)
   let imageRef = useRef<HTMLDivElement | null>(null)
@@ -156,45 +148,25 @@ export default function Mission() : JSX.Element {
     }).from(firstParagraphRef.current, {
       x: -200,
       opacity: 0,
-      duration: 1
+      duration: 1,
     }).from(secondParagraphRef.current, {
       y: 200,
       opacity: 0,
-      duration: 1
+      duration: 1,
     }, "<").from(imageRef.current, {
       x: 200,
       opacity: 0,
-      duration: 1
-    }, "<").from(linkRef.current, {
+      duration: 1,
+    }, "<").fromTo(linkRef.current, {
       y: 200, 
       opacity: 0,
-      duration: 1
-    })
-
-    linkRef.current?.addEventListener('mouseenter', () => {
-      let linkWidth = linkRef.current?.clientWidth
-
-      gsap.to(linkRef.current, {
-        x: '1rem'  
-      })
-
-      gsap.fromTo(linkUnderlineRef.current, {
-        visibility: 'hidden',
-        x: -25,
-        opacity: 1,
-        duration: 1.5
-      }, {
-        visibility: 'visible',
-        x: (linkWidth ? linkWidth : 200),
-        opacity: 0,
-        duration: 1.5
-      })
-    })
-
-    linkRef.current?.addEventListener('mouseleave', () => {
-      gsap.to(linkRef.current, {
-        x: 0
-      })
+      duration: 1,
+      visibility: 'hidden'
+    }, {
+      visibility: 'visible',
+      y: 0,
+      opacity: 1,
+      duration: 1,
     })
   })
 
@@ -215,12 +187,11 @@ export default function Mission() : JSX.Element {
         <p ref={secondParagraphRef}>
           However, most of images, scoreboards and participant names have been either lost or forgotten by the community. <strong>We believe that heroes deserve to be known by public</strong>, thus it motivated us to create this wonderful resource and make an effort to preserve history.
         </p>
-        
-        <a href="https://icpc.global/" ref={linkRef}>
-          <span>Look more</span>
+
+        <Link href="https://icpc.global/" ref={linkRef} offset='1rem'>
+          <span>Learn more</span>
           <FaArrowRight size={'1.5rem'}/>
-          <hr ref={linkUnderlineRef} />
-        </a>
+        </Link>
       </StyledWrapperLeft>
       <StyledWrapperRight ref={imageRef}>
 

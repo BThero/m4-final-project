@@ -4,6 +4,7 @@ import Slide from "./Slide"
 import { SlideProps } from "./types"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import { gsap, Power4 } from "gsap"
+import getData from './CarouselData'
 
 const StyledCarousel = styled.section`
   background-color: var(--color-gray-700);
@@ -49,47 +50,20 @@ const StyledSlideshow = styled.div`
 `
 
 export default function Carousel() : JSX.Element {
-  const [list] = useState<SlideProps[]>([
-    {
-      imageUrl: "/assets/2016-winners.jpeg",
-      heading: "Finals 2016",
-      description: "May 15-20, Phuket"
-    },
-    {
-      imageUrl: "/assets/2017-winners.jpeg",
-      heading: "Finals 2017",
-      description: "May 20-25, Rapid City"
-    },
-    {
-      imageUrl: "/assets/2018-winners.jpeg",
-      heading: "Finals 2018",
-      description: "April 15-20, Peking University"
-    },
-    {
-      imageUrl: "/assets/2019-winners.jpeg",
-      heading: "Finals 2019",
-      description: "March 31 - April 5, Porto"
-    },
-    {
-      imageUrl: "/assets/2020-winners.jpeg",
-      heading: "Finals 2020",
-      description: "October 1-5, Moscow (2021)"
-    }
-  ])
-
-  const listRefs : MutableRefObject<HTMLDivElement | null>[] = [
+  const [list] = useState<SlideProps[]>(getData())
+  const [listRefs] = useState<MutableRefObject<HTMLDivElement | null>[]>([
     useRef<(HTMLDivElement | null)>(null),
     useRef<(HTMLDivElement | null)>(null),
     useRef<(HTMLDivElement | null)>(null),
     useRef<(HTMLDivElement | null)>(null),
     useRef<(HTMLDivElement | null)>(null)
-  ];
+  ])
 
   const buttonLeftRef = useRef<(HTMLButtonElement | null)>(null);
   const buttonRightRef = useRef<(HTMLButtonElement | null)>(null);
 
   const animationTiming : number = 1.5
-  let curIndex = 0
+  let curIndex : number = 0
   let slideshowTimer: NodeJS.Timeout | null = null
 
   useEffect(() => {

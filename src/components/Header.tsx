@@ -4,10 +4,7 @@ import { useEffect, useRef } from "react";
 import { FaMedal } from "react-icons/fa";
 
 const StyledHeader = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background-color: var(--color-gray-900);
+  background-color: var(--color-bg);
   height: 4rem;
   display: flex;
   flex-direction: row;
@@ -26,7 +23,7 @@ const StyledFlag = styled.div`
   width: 100%;
   top: 50%;
   transform: translateY(-50%);
-  background-color: var(--color-gray-900);
+  background-color: var(--color-bg);
   z-index: 1;
 `
 

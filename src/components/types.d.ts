@@ -5,3 +5,9 @@ export interface SlideProps {
   onmouseover?: string,
   onmouseout?: string
 }
+
+export interface LinkProps {
+  children: any,
+  href: string,
+  offset?: string
+}
