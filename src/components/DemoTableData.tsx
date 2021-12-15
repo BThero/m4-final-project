@@ -311,7 +311,6 @@ export function getSubmissions() {
     return a.time - b.time
   })
 
-  console.log(submissionList)
   return submissionList
 }
 

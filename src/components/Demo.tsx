@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useLayoutEffect, useRef } from "react"
 import styled from "styled-components"
 import { Submission } from "./types"
 import {
@@ -284,7 +284,7 @@ export default function Demo() : JSX.Element {
                 {
                   [...Array(tableColumns)].map((_, idx) => {
                     return (
-                      <th>
+                      <th key={idx}>
                         {String.fromCharCode(65 + idx)}
                       </th>
                     )
@@ -297,14 +297,14 @@ export default function Demo() : JSX.Element {
               {
                 [...Array(tableRows)].map((_, i) => {
                   return (
-                    <tr>
+                    <tr key={i}>
                       <td>
                         {list[i].name}
                       </td>
                       {
                         [...Array(tableColumns)].map((_, j) => {
                           return (
-                            <td ref={el => cellRefs.current[i * tableColumns + j] = el}></td>
+                            <td key={j} ref={el => cellRefs.current[i * tableColumns + j] = el}></td>
                           )
                         })
                       }

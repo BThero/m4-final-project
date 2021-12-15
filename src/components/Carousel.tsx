@@ -185,7 +185,7 @@ export default function Carousel() : JSX.Element {
         {
           list.map((li, idx) => {
             return (
-              <Slide {...li} ref={em => listRefs.current[idx] = em} />
+              <Slide key={idx} {...li} ref={em => listRefs.current[idx] = em} />
             )
           })
         }
