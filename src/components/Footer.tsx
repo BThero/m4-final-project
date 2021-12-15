@@ -15,7 +15,7 @@ const StyledFooter = styled.footer`
 `
 
 const StyledWrapperLeft = styled.div`
-  
+  color: white;
 `
 
 const StyledLogoWrapper = styled.div`

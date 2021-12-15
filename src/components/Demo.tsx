@@ -210,9 +210,9 @@ export default function Demo() : JSX.Element {
     let demoElement = demoRef.current as HTMLDivElement
     let offsetHeight = demoElement.offsetTop
     let height = demoElement.offsetHeight
-    let animationHeight = height * 0.5
+    let animationHeight = height * 0.6
 
-    let curProgress = window.scrollY + vh * 0.8 - offsetHeight
+    let curProgress = window.scrollY + vh * 0.7 - offsetHeight
     curProgress = Math.max(curProgress - (height - animationHeight) / 2, 0)
     curProgress = Math.min(curProgress, animationHeight)
 
