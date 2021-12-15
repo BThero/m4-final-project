@@ -239,7 +239,7 @@ export default function Demo() : JSX.Element {
       y: 300,
       opacity: 0,
       duration: 1.5,
-      ScrollTrigger: headerRef.current
+      scrollTrigger: headerRef.current
     })
 
     gsap.from(tableRef.current, {
