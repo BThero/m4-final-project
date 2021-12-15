@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import Slide from "./Slide"
 import { SlideProps } from "./types"
@@ -58,13 +58,7 @@ const StyledHeader = styled.header`
 
 export default function Carousel() : JSX.Element {
   const [list] = useState<SlideProps[]>(getData())
-  const [listRefs] = useState<MutableRefObject<HTMLDivElement | null>[]>([
-    useRef<(HTMLDivElement | null)>(null),
-    useRef<(HTMLDivElement | null)>(null),
-    useRef<(HTMLDivElement | null)>(null),
-    useRef<(HTMLDivElement | null)>(null),
-    useRef<(HTMLDivElement | null)>(null)
-  ])
+  const listRefs = useRef<Array<HTMLDivElement | null>>([])
 
   const buttonLeftRef = useRef<(HTMLButtonElement | null)>(null);
   const buttonRightRef = useRef<(HTMLButtonElement | null)>(null);
@@ -105,15 +99,15 @@ export default function Carousel() : JSX.Element {
     (buttonRightRef.current as HTMLButtonElement).disabled = true;
 
     for (let i = 0; i < list.length; i++) {
-      let element = listRefs[i].current as HTMLDivElement; 
+      let element = listRefs.current[i] as HTMLDivElement; 
       element.removeEventListener('click', handleClickRight)
       element.removeEventListener('click', handleClickLeft)
       element.setAttribute('style', 'opacity: 0;')
     }
 
-    let curElement = listRefs[curIndex].current as HTMLDivElement
-    let prevElement = listRefs[prevIndex].current as HTMLDivElement
-    let nextElement = listRefs[nextIndex].current as HTMLDivElement
+    let curElement = listRefs.current[curIndex] as HTMLDivElement
+    let prevElement = listRefs.current[prevIndex] as HTMLDivElement
+    let nextElement = listRefs.current[nextIndex] as HTMLDivElement
 
     let headingText = curElement.querySelector('h1')
     let supportingText = curElement.querySelector('p')
@@ -191,7 +185,7 @@ export default function Carousel() : JSX.Element {
         {
           list.map((li, idx) => {
             return (
-              <Slide {...li} ref={listRefs[idx]} />
+              <Slide {...li} ref={em => listRefs.current[idx] = em} />
             )
           })
         }

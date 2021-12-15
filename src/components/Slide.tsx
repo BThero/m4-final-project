@@ -18,7 +18,7 @@ const StyledSlide = styled.div`
 `
 
 const StyledImageContainer = styled.div<{ src: string }>`
-  background-image: url(${(props) => (props.src)});
+  background-image: url(${(props) => (process.env.PUBLIC_URL + props.src)});
   background-repeat: no-repeat;
   background-size: cover;
   align-self: stretch;

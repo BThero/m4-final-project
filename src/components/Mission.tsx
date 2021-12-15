@@ -68,7 +68,7 @@ const StyledWrapperLeft = styled.div`
 const StyledWrapperRight = styled.div`
   width: 35vw;
   height: calc(35vw * 4 / 3);
-  background: url('/assets/tourist.jpeg') no-repeat center center; 
+  background: url(${process.env.PUBLIC_URL}/assets/tourist.jpeg) no-repeat center center; 
   background-size: cover;
 `
 
