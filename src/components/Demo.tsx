@@ -217,18 +217,9 @@ export default function Demo() : JSX.Element {
     curProgress = Math.min(curProgress, animationHeight)
 
     if (prevProgress !== curProgress) {
-      console.log(curProgress)
       let progressElement = progressRef.current as HTMLDivElement
       progressElement.setAttribute('style', `width: ${curProgress / animationHeight * 100}%`)
       updateTable(curProgress * contestDuration / animationHeight)
-
-      if (prevProgress < curProgress) {
-        console.log('scrolled down')
-      }
-      else {
-        console.log('scrolled up')
-      }
-
       prevProgress = curProgress
     }
   }
