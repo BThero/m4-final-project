@@ -1,21 +1,9 @@
 import { ForwardedRef, forwardRef, useEffect, useRef } from "react"
-import styled from "styled-components"
-import { LinkProps } from "./types.d"
+import { LinkProps } from "../../common/types"
 import { gsap } from "gsap"
+import { A, HR } from "./Link.styled"
 
-const StyledLink = styled.a`
-  display: inline-block;
-  text-decoration: none; 
-  color: var(--color-rose-300);
-
-  hr {
-    width: 20px;
-    visibility: hidden;
-    border-color: white;
-  }
-`
-
-const useForwardedRef = (ref : ForwardedRef<HTMLAnchorElement | null>) => {
+function useForwardedRef(ref : ForwardedRef<HTMLAnchorElement | null>) {
   const innerRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
@@ -32,7 +20,7 @@ const useForwardedRef = (ref : ForwardedRef<HTMLAnchorElement | null>) => {
 }
 
 const Link = forwardRef<HTMLAnchorElement | null, LinkProps>((props, ref) => {
-  let linkUnderlineRef = useRef<(HTMLHRElement | null)>(null)
+  const linkUnderlineRef = useRef<(HTMLHRElement | null)>(null)
   const linkRef = useForwardedRef(ref)
 
   useEffect(() => {
@@ -69,13 +57,13 @@ const Link = forwardRef<HTMLAnchorElement | null, LinkProps>((props, ref) => {
         })
       }
     }
-  }, [])
+  }, [linkRef, props.offset])
 
   return (
-    <StyledLink href={props.href} ref={linkRef}>
+    <A href={props.href} ref={linkRef}>
       {props.children}
-      <hr ref={linkUnderlineRef} />
-    </StyledLink>
+      <HR ref={linkUnderlineRef} />
+    </A>
   )
 })
 

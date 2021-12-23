@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import styled from "styled-components";
-import { SlideProps } from "./types";
+import { SlideProps } from "../../../common/types";
 
 const StyledSlide = styled.div`
   width: 100%;
